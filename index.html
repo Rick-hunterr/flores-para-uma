@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#f6c9d8">
+<meta name="theme-color" content="#26361f">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💐</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <title>Para Uma 💐</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -37,43 +40,57 @@
     <p>Girá tu teléfono para continuar</p>
   </div>
 
-  <!-- Escena principal -->
+  <!-- Escena principal: overworld -->
   <div id="game-screen" class="screen hidden">
-    <div class="sky"></div>
-    <div class="sun"></div>
-    <div class="clouds" aria-hidden="true">
-      <span class="cloud c1"></span>
-      <span class="cloud c2"></span>
-      <span class="cloud c3"></span>
-    </div>
-    <div class="ground"></div>
-    <div class="grass-deco" aria-hidden="true"></div>
 
-    <div class="stage">
-      <div id="pablo" class="character pablo">
+    <div class="map" id="map">
+      <div class="deco tree t1" aria-hidden="true"></div>
+      <div class="deco tree t2" aria-hidden="true"></div>
+      <div class="deco tree t3" aria-hidden="true"></div>
+      <div class="deco tree t4" aria-hidden="true"></div>
+      <div class="deco tree t5" aria-hidden="true"></div>
+      <div class="deco tree t6" aria-hidden="true"></div>
+      <div class="deco bush b1" aria-hidden="true"></div>
+      <div class="deco bush b2" aria-hidden="true"></div>
+      <div class="deco flowerpatch f1" aria-hidden="true"></div>
+      <div class="deco flowerpatch f2" aria-hidden="true"></div>
+
+      <div id="pablo" class="character">
         <div class="shadow"></div>
         <div class="sprite pablo-sprite"></div>
       </div>
 
-      <div id="bouquet" class="bouquet" aria-hidden="true">💐</div>
-
-      <div id="uma" class="character uma">
+      <div id="uma" class="character">
         <div class="shadow"></div>
         <div class="sprite uma-sprite"></div>
-        <div class="hearts" aria-hidden="true">
-          <span>💖</span><span>💕</span><span>💗</span>
-        </div>
       </div>
+
+      <div id="flower-fx" class="flower-fx" aria-hidden="true">💐</div>
     </div>
 
-    <button id="give-btn" class="give-btn">Dale las flores 💐</button>
+    <div class="hint" id="hint">Acercate a Pablo</div>
 
-    <p id="message" class="message hidden"></p>
+    <div id="dpad" class="dpad" aria-hidden="false">
+      <button class="dpad-btn up" data-dir="up" aria-label="Arriba">▲</button>
+      <button class="dpad-btn left" data-dir="left" aria-label="Izquierda">◀</button>
+      <button class="dpad-btn right" data-dir="right" aria-label="Derecha">▶</button>
+      <button class="dpad-btn down" data-dir="down" aria-label="Abajo">▼</button>
+      <div class="dpad-center" aria-hidden="true"></div>
+    </div>
 
     <button id="mute-btn" class="mute-btn" aria-label="Silenciar música">🔊</button>
+
+    <!-- Cuadro de diálogo estilo retro -->
+    <div id="dialog-box" class="dialog-box hidden">
+      <div class="dialog-frame">
+        <p id="dialog-text" class="dialog-text"></p>
+        <span id="dialog-arrow" class="dialog-arrow hidden">▼</span>
+      </div>
+    </div>
   </div>
 
-  <audio id="bg-music" src="assets/audio/agujetas.ogg" loop preload="auto"></audio>
+  <audio id="music-map" src="assets/audio/cancion_nes_instrumental.ogg" loop preload="auto"></audio>
+  <audio id="music-flowers" src="assets/audio/flores_amarillas.ogg" loop preload="auto"></audio>
 
   <script src="js/main.js"></script>
 </body>
