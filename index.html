@@ -110,11 +110,23 @@
         <span id="dialog-arrow" class="dialog-arrow hidden">▼</span>
       </div>
     </div>
+
+    <!-- Momento especial: flor + corazon al entregar las flores -->
+    <div id="special-moment" class="special-moment hidden" aria-hidden="true">
+      <div class="special-content">
+        <img class="special-flower" src="assets/images/girasolpixel.png" alt="">
+        <div class="special-heart"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Pantalla final: wallpaper descargable -->
   <div id="final-screen" class="screen hidden">
     <h2 class="menu-title small">💐</h2>
+    <div class="wallpaper-tabs">
+      <button id="tab-scene" class="tab-btn active" data-tab="scene">Fondo completo</button>
+      <button id="tab-souvenir" class="tab-btn" data-tab="souvenir">Recuerdo</button>
+    </div>
     <div class="wallpaper-frame">
       <img id="wallpaper-preview" class="wallpaper-preview" alt="Pablo y Uma rodeados de flores">
     </div>
@@ -125,6 +137,7 @@
   </div>
 
   <canvas id="wallpaper-canvas" width="1080" height="1920" class="hidden"></canvas>
+  <canvas id="souvenir-canvas" width="1080" height="1920" class="hidden"></canvas>
 
   <!-- fundido entre pantallas -->
   <div id="fade-overlay" class="fade-overlay" aria-hidden="true"></div>

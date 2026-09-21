@@ -12,13 +12,19 @@ de pantalla pixel art descargable.
 
 Uma se controla con un D-pad táctil y camina por un overworld grande
 (la cámara la sigue con scroll suave); Pablo se mueve solo siguiendo un
-recorrido en loop. Al acercarse se disparan las flores automáticamente
-y aparece un botón para hablar con él: un diálogo corto estilo RPG
-(máquina de escribir, tocar para acelerar/avanzar) que cierra con el
-mensaje final. La música hace crossfade a un segundo tema en ese
-momento. Al terminar, se genera un fondo de pantalla 1920x1080 con
-ambos personajes para descargar, y el progreso queda guardado en
-`localStorage` para poder volver a verlo sin rejugar el mapa.
+recorrido en loop. Al acercarse se disparan las flores automáticamente:
+aparece un momento especial (la flor + un corazón, grandes y centrados,
+con fundido de entrada/salida) y después un botón para hablar con él —
+un diálogo corto estilo RPG (máquina de escribir, tocar para
+acelerar/avanzar) que cierra con el mensaje final. La música hace
+crossfade a un segundo tema en ese momento.
+
+Al terminar, la pantalla final ofrece dos imágenes verticales (1080x1920,
+formato celular) para descargar: el **fondo completo** con ambos
+personajes, y un **recuerdo** más simple con la flor, un corazón y un
+textito con el nombre de Uma, la fecha del día y un mensaje corto. El
+progreso queda guardado en `localStorage` para poder volver a ver el
+final sin rejugar el mapa.
 
 ## Ejecutar localmente
 

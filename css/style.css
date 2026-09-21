@@ -623,6 +623,67 @@ button {
 }
 @keyframes arrowBlink { 50% { opacity: 0; } }
 
+/* ---------- momento especial: flor + corazon al entregar las flores ---------- */
+.special-moment {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: rgba(12, 15, 8, 0.5);
+  opacity: 0;
+}
+.special-moment.show { animation: specialFade 3000ms ease-in-out forwards; }
+@keyframes specialFade {
+  0%   { opacity: 0; }
+  14%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.special-content {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  transform: scale(0.5);
+}
+.special-moment.show .special-content { animation: specialScale 3000ms ease-in-out forwards; }
+@keyframes specialScale {
+  0%   { transform: scale(0.5); }
+  14%  { transform: scale(1.1); }
+  22%  { transform: scale(1); }
+  80%  { transform: scale(1); }
+  100% { transform: scale(0.92); }
+}
+
+.special-flower {
+  width: clamp(110px, 22vw, 190px);
+  height: auto;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,0.4));
+}
+
+.special-heart {
+  position: relative;
+  width: clamp(46px, 9vw, 76px);
+  height: clamp(42px, 8vw, 68px);
+  margin-bottom: clamp(10px, 2vw, 18px);
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35));
+}
+.special-heart::before,
+.special-heart::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 53%;
+  height: 86%;
+  border-radius: 100px 100px 0 0;
+  background: #e0577a;
+}
+.special-heart::before { left: 47%; transform: rotate(-45deg); transform-origin: 0 100%; }
+.special-heart::after  { left: 0;   transform: rotate(45deg);  transform-origin: 100% 100%; }
+
 /* ---------- pantalla final ---------- */
 #final-screen {
   display: flex;
@@ -633,6 +694,21 @@ button {
   background: radial-gradient(circle at 50% 25%, #3a5a2c 0%, var(--forest) 55%, var(--forest-dark) 100%);
   padding: 1rem;
 }
+
+.wallpaper-tabs {
+  display: flex;
+  gap: 0.6rem;
+}
+.tab-btn {
+  min-height: 40px;
+  padding: 0.4em 1em;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  color: var(--parchment);
+  background: rgba(245, 233, 200, 0.12);
+  border: 2px solid var(--parchment-dark);
+  border-radius: 999px;
+}
+.tab-btn.active { background: var(--amber); color: var(--ink); border-color: var(--frame-dark); }
 
 .wallpaper-frame {
   border: 4px solid var(--frame-dark);

@@ -37,6 +37,7 @@
   const dpad = document.getElementById("dpad");
   const muteBtn = document.getElementById("mute-btn");
   const talkBtn = document.getElementById("talk-btn");
+  const specialMoment = document.getElementById("special-moment");
 
   const dialogBox = document.getElementById("dialog-box");
   const dialogSpeaker = document.getElementById("dialog-speaker");
@@ -447,6 +448,8 @@
     dialogBox.classList.add("hidden");
     offscreenIndicator.classList.add("hidden");
     flowerFx.classList.remove("pop");
+    specialMoment.classList.add("hidden");
+    specialMoment.classList.remove("show");
     umaSprite.classList.remove("idle-bob");
     pabloSprite.classList.remove("idle-bob");
   }
@@ -660,7 +663,18 @@
     blipFlower();
     crossfadeToFlowers();
 
-    setTimeout(() => talkBtn.classList.remove("hidden"), 1000);
+    // momento especial: flor + corazon grandes, centrados, con fundido de
+    // entrada/salida — se reproduce una vez y despues deja pasar al boton
+    // de hablar.
+    const SPECIAL_MOMENT_MS = 3000;
+    specialMoment.classList.remove("hidden");
+    // reiniciar la animacion por si quedo una clase "show" de una partida anterior
+    specialMoment.classList.remove("show");
+    void specialMoment.offsetWidth; // fuerza reflow para poder re-disparar la animacion
+    specialMoment.classList.add("show");
+    setTimeout(() => specialMoment.classList.add("hidden"), SPECIAL_MOMENT_MS);
+
+    setTimeout(() => talkBtn.classList.remove("hidden"), SPECIAL_MOMENT_MS + 150);
   }
 
   talkBtn.addEventListener("click", () => {
@@ -861,19 +875,124 @@
     });
   }
 
-  let lastWallpaperUrl = null;
+  // corazon dibujado por codigo (sin asset nuevo), via curvas bezier
+  function drawHeart(ctx, cx, cy, size, color) {
+    const top = size * 0.3;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + top);
+    ctx.bezierCurveTo(cx, cy, cx - size / 2, cy, cx - size / 2, cy + top);
+    ctx.bezierCurveTo(cx - size / 2, cy + (size + top) / 2, cx, cy + (size + top) / 2, cx, cy + size);
+    ctx.bezierCurveTo(cx, cy + (size + top) / 2, cx + size / 2, cy + (size + top) / 2, cx + size / 2, cy + top);
+    ctx.bezierCurveTo(cx + size / 2, cy, cx, cy, cx, cy + top);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Recuerdo: tarjeta simple con la flor + el corazon sobre un fondo con la
+  // paleta del juego (sin la escena completa), mas un textito souvenir.
+  const souvenirCanvas = document.getElementById("souvenir-canvas");
+  async function generateSouvenir() {
+    await imagesReady;
+    try {
+      await document.fonts.load('40px "Press Start 2P"');
+      await document.fonts.load('44px "VT323"');
+    } catch (e) { /* opcional */ }
+
+    const ctx = souvenirCanvas.getContext("2d");
+    const W = souvenirCanvas.width;
+    const H = souvenirCanvas.height;
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, W, H);
+
+    // fondo simple con la paleta del bosque
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#3a5a2c");
+    bg.addColorStop(0.55, "#203a1a");
+    bg.addColorStop(1, "#12200e");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    const glow = ctx.createRadialGradient(W / 2, H * 0.4, 40, W / 2, H * 0.4, H * 0.34);
+    glow.addColorStop(0, "rgba(227,165,65,0.35)");
+    glow.addColorStop(1, "rgba(227,165,65,0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+
+    // flor grande + corazon, lado a lado
+    if (flowerImg) {
+      const fw = W * 0.34;
+      const fh = fw * (flowerImg.height / flowerImg.width);
+      ctx.drawImage(flowerImg, W * 0.5 - fw * 0.62, H * 0.24, fw, fh);
+    }
+    drawHeart(ctx, W * 0.66, H * 0.32, W * 0.16, "#e0577a");
+
+    // textito souvenir: nombre + fecha + frase corta
+    const today = new Date().toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" });
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#f5e9c8";
+
+    ctx.font = '46px "Press Start 2P", monospace';
+    ctx.save();
+    ctx.shadowColor = "#12200e";
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
+    ctx.fillText("Uma", W / 2, H * 0.62);
+    ctx.restore();
+
+    ctx.font = '38px "VT323", monospace';
+    ctx.fillStyle = "#e2cd97";
+    ctx.fillText(today, W / 2, H * 0.665);
+
+    ctx.font = 'italic 34px "VT323", monospace';
+    ctx.fillStyle = "#e3a541";
+    ctx.fillText("Con todo mi cariño", W / 2, H * 0.705);
+
+    // marco decorativo simple
+    ctx.strokeStyle = "rgba(245,233,200,0.5)";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(40, 40, W - 80, H - 80);
+
+    return new Promise((resolve) => {
+      souvenirCanvas.toBlob((blob) => resolve(blob), "image/png");
+    });
+  }
+
+  /* ---- pestañas: fondo completo vs. recuerdo ---- */
+  const wallpapers = {
+    scene: { url: null, filename: "pablo-y-uma-fondo.png", label: "Descargar fondo" },
+    souvenir: { url: null, filename: "pablo-y-uma-recuerdo.png", label: "Descargar recuerdo" },
+  };
+  let activeWallpaper = "scene";
+
+  function selectTab(tab) {
+    activeWallpaper = tab;
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+    wallpaperPreview.src = wallpapers[tab].url || "";
+    downloadBtn.textContent = wallpapers[tab].label;
+  }
+  document.getElementById("tab-scene").addEventListener("click", () => selectTab("scene"));
+  document.getElementById("tab-souvenir").addEventListener("click", () => selectTab("souvenir"));
+
   async function showFinalScreen() {
-    const blob = await generateWallpaper();
-    if (lastWallpaperUrl) URL.revokeObjectURL(lastWallpaperUrl);
-    lastWallpaperUrl = URL.createObjectURL(blob);
-    wallpaperPreview.src = lastWallpaperUrl;
+    const [sceneBlob, souvenirBlob] = await Promise.all([generateWallpaper(), generateSouvenir()]);
+
+    if (wallpapers.scene.url) URL.revokeObjectURL(wallpapers.scene.url);
+    if (wallpapers.souvenir.url) URL.revokeObjectURL(wallpapers.souvenir.url);
+    wallpapers.scene.url = URL.createObjectURL(sceneBlob);
+    wallpapers.souvenir.url = URL.createObjectURL(souvenirBlob);
+
+    selectTab("scene");
   }
 
   downloadBtn.addEventListener("click", () => {
-    if (!lastWallpaperUrl) return;
+    const current = wallpapers[activeWallpaper];
+    if (!current.url) return;
     const a = document.createElement("a");
-    a.href = lastWallpaperUrl;
-    a.download = "pablo-y-uma-fondo.png";
+    a.href = current.url;
+    a.download = current.filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
