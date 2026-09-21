@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#26361f">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💐</text></svg>">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Para Uma 🌼">
+<meta property="og:description" content="Un pequeño juego y una carta para Uma.">
+<meta property="og:url" content="https://rick-hunterr.github.io/flores-para-uma/">
+<meta property="og:image" content="https://rick-hunterr.github.io/flores-para-uma/assets/images/og-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Para Uma 🌼">
+<meta name="twitter:description" content="Un pequeño juego y una carta para Uma.">
+<meta name="twitter:image" content="https://rick-hunterr.github.io/flores-para-uma/assets/images/og-preview.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -69,6 +82,8 @@
         <div class="world-bg"></div>
         <!-- la decoracion (arboles, arbustos, flores, rocas, camino) se genera por JS -->
         <div id="decor-layer"></div>
+        <!-- luciernagas en espacio de mundo (para poder agruparlas cerca de Pablo) -->
+        <div id="world-ambient" aria-hidden="true"></div>
 
         <div id="pablo" class="character">
           <div class="shadow"></div>
@@ -80,12 +95,16 @@
           <div class="sprite uma-sprite"></div>
         </div>
 
-        <img id="flower-fx" class="flower-fx" src="assets/images/girasolpixel.png" alt="" aria-hidden="true">
+        <button id="flower-fx" class="flower-fx" aria-hidden="true" tabindex="-1">
+          <img src="assets/images/girasolpixel.png" alt="Recibir las flores">
+        </button>
       </div>
     </div>
 
     <!-- efectos ambientales: luciernagas y hojas, en capa fija (no se mueve con la camara) -->
     <div class="ambient" id="ambient" aria-hidden="true"></div>
+    <div class="tint-overlay" id="tint-overlay" aria-hidden="true"></div>
+    <div class="vignette-overlay" aria-hidden="true"></div>
 
     <p class="hint" id="hint">Acercate a Pablo</p>
     <div class="offscreen-indicator hidden" id="offscreen-indicator" aria-hidden="true">▲</div>
@@ -134,16 +153,27 @@
       <button id="download-btn" class="menu-btn primary">Descargar fondo</button>
       <button id="replay-btn" class="menu-btn">Volver a jugar</button>
     </div>
+    <button id="credits-btn" class="menu-btn ghost">Ver más</button>
   </div>
 
-  <canvas id="wallpaper-canvas" width="1080" height="1920" class="hidden"></canvas>
+  <!-- Post-creditos: la carta, con scroll estilo cine -->
+  <div id="credits-screen" class="screen hidden">
+    <div class="credits-viewport" id="credits-viewport">
+      <div class="credits-content" id="credits-content"></div>
+    </div>
+    <button id="credits-skip" class="menu-btn ghost credits-skip">Volver</button>
+  </div>
+
+  <canvas id="wallpaper-canvas" width="1920" height="1080" class="hidden"></canvas>
   <canvas id="souvenir-canvas" width="1080" height="1920" class="hidden"></canvas>
+  <canvas id="og-canvas" width="1200" height="630" class="hidden"></canvas>
 
   <!-- fundido entre pantallas -->
   <div id="fade-overlay" class="fade-overlay" aria-hidden="true"></div>
 
   <audio id="music-map" src="assets/audio/cancion_nes_instrumental.ogg" loop preload="auto"></audio>
   <audio id="music-flowers" src="assets/audio/flores_amarillas.ogg" loop preload="auto"></audio>
+  <audio id="music-credits" src="assets/audio/cancion_nes_instrumental.ogg" loop preload="auto"></audio>
 
   <script src="js/main.js"></script>
 </body>

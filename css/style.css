@@ -229,6 +229,15 @@ button {
 }
 .menu-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--frame-dark); }
 .menu-btn.primary { background: var(--amber); }
+.menu-btn.ghost {
+  background: transparent;
+  color: var(--parchment);
+  border-color: var(--parchment-dark);
+  box-shadow: none;
+  min-height: 40px;
+  margin-top: 0.6rem;
+}
+.menu-btn.ghost:active { transform: translateY(2px); }
 
 .volume-row {
   display: flex;
@@ -279,6 +288,9 @@ button {
 
 .deco { position: absolute; pointer-events: none; z-index: 2; }
 
+#world-ambient { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+#world-ambient .firefly { position: absolute; }
+
 .clearing {
   position: absolute;
   border-radius: 50%;
@@ -296,9 +308,9 @@ button {
 }
 
 .tree {
-  width: 46px;
-  height: 60px;
-  filter: drop-shadow(2px 3px 0 rgba(0,0,0,0.35));
+  width: 66px;
+  height: 86px;
+  filter: drop-shadow(3px 4px 0 rgba(0,0,0,0.35));
   animation: sway 4.5s ease-in-out infinite;
   transform-origin: 50% 100%;
 }
@@ -306,13 +318,13 @@ button {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 14px;
+  bottom: 20px;
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 23px solid transparent;
-  border-right: 23px solid transparent;
-  border-bottom: 42px solid var(--moss);
+  border-left: 33px solid transparent;
+  border-right: 33px solid transparent;
+  border-bottom: 60px solid var(--moss);
 }
 .tree::after {
   content: "";
@@ -320,9 +332,58 @@ button {
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  width: 10px;
-  height: 16px;
+  width: 14px;
+  height: 22px;
   background: var(--frame-light);
+}
+
+/* tronco caido: obstaculo simple dibujado por codigo (sin asset nuevo) */
+.log {
+  width: 84px;
+  height: 26px;
+  background: linear-gradient(to bottom, #8a6a3c 0%, #6b4f2a 55%, #4a3620 100%);
+  border-radius: 13px;
+  box-shadow: inset 0 -5px 0 rgba(0,0,0,0.25), 1px 3px 4px rgba(0,0,0,0.35);
+}
+.log::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  border-radius: 50%;
+  background: #6b4f2a;
+  box-shadow: inset 2px 0 0 rgba(0,0,0,0.2);
+}
+
+/* laguna: obstaculo grande con brillo animado en el agua */
+.lake {
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 35% 30%, #9fe0e6 0%, #4a95a8 48%, #275c69 100%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+.lake::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(120deg, rgba(255,255,255,0.28) 0px, rgba(255,255,255,0.28) 6px, transparent 6px, transparent 26px);
+  animation: lakeShimmer 4.5s linear infinite;
+  mix-blend-mode: overlay;
+}
+@keyframes lakeShimmer {
+  from { background-position: 0 0; }
+  to   { background-position: 140px 70px; }
+}
+
+/* girasoles chicos esparcidos como decoracion extra (reciclando el sprite) */
+.deco-flower {
+  width: 34px;
+  height: auto;
+  filter: drop-shadow(1px 2px 0 rgba(0,0,0,0.3));
+  animation: sway 3.4s ease-in-out infinite;
+  transform-origin: 50% 100%;
 }
 
 .bush {
@@ -394,18 +455,51 @@ button {
   50% { transform: translateY(-3px); }
 }
 
+.character.notice { animation: noticeBounce 0.6s ease-in-out 2; }
+@keyframes noticeBounce {
+  0%, 100% { transform: translate(-50%, -100%) scale(1); }
+  35%      { transform: translate(-50%, -112%) scale(1.06, 0.94); }
+  60%      { transform: translate(-50%, -100%) scale(0.96, 1.05); }
+}
+
 .pablo-sprite { background-image: url("../assets/images/pablo-walk.png"); }
 .uma-sprite   { background-image: url("../assets/images/uma-walk.png"); }
 
 .flower-fx {
   position: absolute;
-  width: clamp(46px, 9vw, 72px);
-  height: auto;
   z-index: 6;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0);
+  background: none;
+  border: none;
+  padding: 14px;
+  margin: -14px;
+  pointer-events: none;
+}
+.flower-fx img {
+  display: block;
+  width: clamp(46px, 9vw, 72px);
+  height: auto;
   filter: drop-shadow(0 3px 3px rgba(0,0,0,0.35));
 }
+
+/* estado "prompt": Pablo ofrece la flor, Uma tiene que tocarla para recibirla */
+.flower-fx.prompt {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%, -50%) scale(1);
+  animation: flowerPrompt 1.4s ease-in-out infinite, promptFadeIn 0.4s ease-out;
+}
+@keyframes promptFadeIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes flowerPrompt {
+  0%, 100% { transform: translate(-50%, -50%) scale(1) translateY(0); }
+  50%      { transform: translate(-50%, -50%) scale(1.08) translateY(-4px); }
+}
+
 .flower-fx.pop { animation: flowerPop 1.1s ease-out forwards; }
 @keyframes flowerPop {
   0%   { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(-15deg); }
@@ -454,6 +548,26 @@ button {
 @keyframes leafFall {
   0%   { transform: translate(0, 0) rotate(0deg); }
   100% { transform: translate(28px, 130vh) rotate(220deg); }
+}
+
+/* tinte calido que se intensifica al acercarse a Pablo (opacidad via JS) */
+.tint-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(227,165,65,0.5) 0%, rgba(224,87,122,0.35) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* vineta sutil para dar sensacion mas cinematografica */
+.vignette-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(10,14,8,0.55) 100%);
 }
 
 /* ---------- indicaciones UI ---------- */
@@ -604,6 +718,8 @@ button {
   color: var(--amber-dark);
   margin-bottom: 0.4em;
 }
+.dialog-speaker:empty { display: none; }
+.dialog-text.narrative { font-style: italic; color: var(--frame-light); }
 
 .dialog-text {
   font-family: "VT323", monospace;
@@ -715,12 +831,106 @@ button {
   border-radius: 10px;
   box-shadow: 0 6px 0 var(--frame-dark);
   overflow: hidden;
+  background: var(--forest-dark);
+}
+.wallpaper-frame.portrait {
   height: min(60vh, 560px);
   width: auto;
   aspect-ratio: 9 / 16;
-  background: var(--forest-dark);
+}
+.wallpaper-frame.landscape {
+  width: min(84vw, 480px);
+  height: auto;
+  aspect-ratio: 16 / 9;
 }
 .wallpaper-preview { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---------- post-creditos: la carta con scroll estilo cine ---------- */
+#credits-screen {
+  background: linear-gradient(to bottom, var(--forest-dark) 0%, #0e1a0b 100%);
+}
+
+.credits-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.credits-content {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: min(88vw, 640px);
+  transform: translate(-50%, 100vh);
+  padding: 6vh 0 40vh;
+  text-align: center;
+}
+
+.credits-content p {
+  font-family: "VT323", monospace;
+  font-size: clamp(1.1rem, 3.4vw, 1.5rem);
+  line-height: 1.5;
+  color: var(--parchment);
+  margin: 0 0 1.1em;
+}
+.credits-content p.signature {
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(0.85rem, 2.6vw, 1.1rem);
+  color: var(--amber);
+  margin: 0.6em 0 1.3em;
+}
+
+.credits-sprite-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 0.4em 0 1.6em;
+}
+.credits-sprite-row img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+}
+.credits-heart {
+  position: relative;
+  width: 38px;
+  height: 34px;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+}
+.credits-heart::before,
+.credits-heart::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 53%;
+  height: 86%;
+  border-radius: 100px 100px 0 0;
+  background: #e0577a;
+}
+.credits-heart::before { left: 47%; transform: rotate(-45deg); transform-origin: 0 100%; }
+.credits-heart::after  { left: 0;   transform: rotate(45deg);  transform-origin: 100% 100%; }
+.credits-portrait {
+  width: 44px;
+  height: 44px;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+}
+
+.credits-skip {
+  position: absolute;
+  top: 3%;
+  right: 4%;
+  z-index: 6;
+}
+
+.credits-end {
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(1rem, 4vw, 1.4rem);
+  color: var(--parchment);
+  margin-top: 2em;
+}
 
 /* ---------- responsive: landscape corto (celulares) ---------- */
 @media (max-height: 420px) {
@@ -730,7 +940,8 @@ button {
   .dialog-text { font-size: clamp(0.95rem, 3.6vh, 1.2rem); }
   .talk-btn { bottom: 20%; }
   .menu-buttons { width: min(70vw, 280px); }
-  .wallpaper-frame { height: min(78vh, 340px); }
+  .wallpaper-frame.portrait { height: min(78vh, 340px); }
+  .wallpaper-frame.landscape { width: min(70vw, 380px); }
 }
 
 @media (min-width: 900px) {
