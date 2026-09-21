@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f6c9d8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💐</text></svg>">
+<title>Para Uma 💐</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Pantalla de regalo -->
+  <div id="gift-screen" class="screen">
+    <div class="sparkles" aria-hidden="true"></div>
+    <h1 class="gift-title">Para Uma</h1>
+    <button id="gift-box" class="gift-box" aria-label="Abrir regalo">
+      <svg viewBox="0 0 100 100" class="gift-svg">
+        <rect class="box-body" x="14" y="42" width="72" height="46" rx="4"/>
+        <rect class="box-lid" x="10" y="30" width="80" height="16" rx="4"/>
+        <rect class="ribbon-v" x="45" y="30" width="10" height="58"/>
+        <rect class="ribbon-h" x="10" y="38" width="80" height="10"/>
+        <path class="bow" d="M50 30 C40 14, 20 16, 26 28 C30 34, 44 32, 50 30 C56 32, 70 34, 74 28 C80 16, 60 14, 50 30 Z"/>
+      </svg>
+    </button>
+    <p class="gift-hint">Tocá el regalo para abrirlo</p>
+  </div>
+
+  <!-- Pantalla: girá el teléfono -->
+  <div id="rotate-screen" class="screen hidden">
+    <svg viewBox="0 0 100 100" class="rotate-svg" aria-hidden="true">
+      <rect x="30" y="10" width="40" height="70" rx="6" fill="none" stroke="currentColor" stroke-width="5"/>
+      <circle cx="50" cy="72" r="2.5" fill="currentColor"/>
+      <path d="M78 40 A28 28 0 1 1 62 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <path d="M62 8 L62 18 L72 16 Z" fill="currentColor"/>
+    </svg>
+    <p>Girá tu teléfono para continuar</p>
+  </div>
+
+  <!-- Escena principal -->
+  <div id="game-screen" class="screen hidden">
+    <div class="sky"></div>
+    <div class="sun"></div>
+    <div class="clouds" aria-hidden="true">
+      <span class="cloud c1"></span>
+      <span class="cloud c2"></span>
+      <span class="cloud c3"></span>
+    </div>
+    <div class="ground"></div>
+    <div class="grass-deco" aria-hidden="true"></div>
+
+    <div class="stage">
+      <div id="pablo" class="character pablo">
+        <div class="shadow"></div>
+        <div class="sprite pablo-sprite"></div>
+      </div>
+
+      <div id="bouquet" class="bouquet" aria-hidden="true">💐</div>
+
+      <div id="uma" class="character uma">
+        <div class="shadow"></div>
+        <div class="sprite uma-sprite"></div>
+        <div class="hearts" aria-hidden="true">
+          <span>💖</span><span>💕</span><span>💗</span>
+        </div>
+      </div>
+    </div>
+
+    <button id="give-btn" class="give-btn">Dale las flores 💐</button>
+
+    <p id="message" class="message hidden"></p>
+
+    <button id="mute-btn" class="mute-btn" aria-label="Silenciar música">🔊</button>
+  </div>
+
+  <audio id="bg-music" src="assets/audio/agujetas.ogg" loop preload="auto"></audio>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
