@@ -13,7 +13,7 @@
 </head>
 <body>
 
-  <!-- Pantalla de regalo -->
+  <!-- Pantalla de regalo (primer gesto del usuario: desbloquea audio/fullscreen) -->
   <div id="gift-screen" class="screen">
     <div class="sparkles" aria-hidden="true"></div>
     <h1 class="gift-title">Para Uma</h1>
@@ -29,7 +29,7 @@
     <p class="gift-hint">Tocá el regalo para abrirlo</p>
   </div>
 
-  <!-- Pantalla: girá el teléfono -->
+  <!-- Pantalla: girá el telefono (gate de orientacion en portrait) -->
   <div id="rotate-screen" class="screen hidden">
     <svg viewBox="0 0 100 100" class="rotate-svg" aria-hidden="true">
       <rect x="30" y="10" width="40" height="70" rx="6" fill="none" stroke="currentColor" stroke-width="5"/>
@@ -40,37 +40,57 @@
     <p>Girá tu teléfono para continuar</p>
   </div>
 
-  <!-- Escena principal: overworld -->
+  <!-- Menu principal: Jugar / Opciones -->
+  <div id="start-screen" class="screen hidden">
+    <h1 class="menu-title">Para Uma</h1>
+    <p class="menu-subtitle">un pequeño paseo por el bosque</p>
+    <div class="menu-buttons">
+      <button id="play-btn" class="menu-btn primary">Jugar</button>
+      <button id="options-btn" class="menu-btn">Opciones</button>
+      <button id="rewatch-btn" class="menu-btn hidden">Ver el final</button>
+    </div>
+  </div>
+
+  <!-- Opciones: volumen -->
+  <div id="options-screen" class="screen hidden">
+    <h2 class="menu-title small">Opciones</h2>
+    <label class="volume-row" for="volume-slider">
+      <span>🎵 Música</span>
+      <input type="range" id="volume-slider" min="0" max="100" value="70">
+    </label>
+    <button id="options-back-btn" class="menu-btn">Volver</button>
+  </div>
+
+  <!-- Escena principal: overworld con camara -->
   <div id="game-screen" class="screen hidden">
 
-    <div class="map" id="map">
-      <div class="deco tree t1" aria-hidden="true"></div>
-      <div class="deco tree t2" aria-hidden="true"></div>
-      <div class="deco tree t3" aria-hidden="true"></div>
-      <div class="deco tree t4" aria-hidden="true"></div>
-      <div class="deco tree t5" aria-hidden="true"></div>
-      <div class="deco tree t6" aria-hidden="true"></div>
-      <div class="deco bush b1" aria-hidden="true"></div>
-      <div class="deco bush b2" aria-hidden="true"></div>
-      <div class="deco flowerpatch f1" aria-hidden="true"></div>
-      <div class="deco flowerpatch f2" aria-hidden="true"></div>
+    <div class="camera" id="camera">
+      <div class="world" id="world">
+        <div class="world-bg"></div>
+        <!-- la decoracion (arboles, arbustos, flores, rocas, camino) se genera por JS -->
+        <div id="decor-layer"></div>
 
-      <div id="pablo" class="character">
-        <div class="shadow"></div>
-        <div class="sprite pablo-sprite"></div>
+        <div id="pablo" class="character">
+          <div class="shadow"></div>
+          <div class="sprite pablo-sprite"></div>
+        </div>
+
+        <div id="uma" class="character">
+          <div class="shadow"></div>
+          <div class="sprite uma-sprite"></div>
+        </div>
+
+        <div id="flower-fx" class="flower-fx" aria-hidden="true">💐</div>
       </div>
-
-      <div id="uma" class="character">
-        <div class="shadow"></div>
-        <div class="sprite uma-sprite"></div>
-      </div>
-
-      <div id="flower-fx" class="flower-fx" aria-hidden="true">💐</div>
     </div>
 
-    <div class="hint" id="hint">Acercate a Pablo</div>
+    <!-- efectos ambientales: luciernagas y hojas, en capa fija (no se mueve con la camara) -->
+    <div class="ambient" id="ambient" aria-hidden="true"></div>
 
-    <div id="dpad" class="dpad" aria-hidden="false">
+    <p class="hint" id="hint">Acercate a Pablo</p>
+    <div class="offscreen-indicator hidden" id="offscreen-indicator" aria-hidden="true">▲</div>
+
+    <div id="dpad" class="dpad">
       <button class="dpad-btn up" data-dir="up" aria-label="Arriba">▲</button>
       <button class="dpad-btn left" data-dir="left" aria-label="Izquierda">◀</button>
       <button class="dpad-btn right" data-dir="right" aria-label="Derecha">▶</button>
@@ -80,14 +100,34 @@
 
     <button id="mute-btn" class="mute-btn" aria-label="Silenciar música">🔊</button>
 
-    <!-- Cuadro de diálogo estilo retro -->
+    <button id="talk-btn" class="talk-btn hidden">💬 Hablar</button>
+
+    <!-- Cuadro de dialogo estilo RPG retro -->
     <div id="dialog-box" class="dialog-box hidden">
       <div class="dialog-frame">
+        <p id="dialog-speaker" class="dialog-speaker"></p>
         <p id="dialog-text" class="dialog-text"></p>
         <span id="dialog-arrow" class="dialog-arrow hidden">▼</span>
       </div>
     </div>
   </div>
+
+  <!-- Pantalla final: wallpaper descargable -->
+  <div id="final-screen" class="screen hidden">
+    <h2 class="menu-title small">💐</h2>
+    <div class="wallpaper-frame">
+      <img id="wallpaper-preview" class="wallpaper-preview" alt="Pablo y Uma rodeados de flores">
+    </div>
+    <div class="menu-buttons row">
+      <button id="download-btn" class="menu-btn primary">Descargar fondo</button>
+      <button id="replay-btn" class="menu-btn">Volver a jugar</button>
+    </div>
+  </div>
+
+  <canvas id="wallpaper-canvas" width="1920" height="1080" class="hidden"></canvas>
+
+  <!-- fundido entre pantallas -->
+  <div id="fade-overlay" class="fade-overlay" aria-hidden="true"></div>
 
   <audio id="music-map" src="assets/audio/cancion_nes_instrumental.ogg" loop preload="auto"></audio>
   <audio id="music-flowers" src="assets/audio/flores_amarillas.ogg" loop preload="auto"></audio>

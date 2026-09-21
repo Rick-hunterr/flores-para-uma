@@ -5,11 +5,20 @@ a Uma. Pensado para abrirse desde el teléfono: primero aparece un regalo
 para abrir, luego la experiencia pasa a pantalla completa / horizontal y
 empieza la música.
 
-Uma se controla con un D-pad táctil y camina por un pequeño overworld;
-Pablo se mueve solo siguiendo un recorrido en loop. Cuando Uma se acerca
-lo suficiente a Pablo se dispara automáticamente la entrega de flores,
-la música hace un crossfade a un segundo tema y aparece un cuadro de
-diálogo con efecto máquina de escribir.
+Flujo: regalo → menú (Jugar / Opciones) → overworld con cámara siguiendo
+a Uma → entrega automática de flores al acercarse a Pablo → botón
+"Hablar" con una charla corta de 4 líneas → pantalla final con un fondo
+de pantalla pixel art descargable.
+
+Uma se controla con un D-pad táctil y camina por un overworld grande
+(la cámara la sigue con scroll suave); Pablo se mueve solo siguiendo un
+recorrido en loop. Al acercarse se disparan las flores automáticamente
+y aparece un botón para hablar con él: un diálogo corto estilo RPG
+(máquina de escribir, tocar para acelerar/avanzar) que cierra con el
+mensaje final. La música hace crossfade a un segundo tema en ese
+momento. Al terminar, se genera un fondo de pantalla 1920x1080 con
+ambos personajes para descargar, y el progreso queda guardado en
+`localStorage` para poder volver a verlo sin rejugar el mapa.
 
 ## Ejecutar localmente
 
