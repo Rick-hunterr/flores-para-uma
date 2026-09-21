@@ -754,10 +754,12 @@
 
   let pabloImg = null;
   let umaImg = null;
+  let flowerImg = null;
   const imagesReady = Promise.all([
     loadImage("assets/images/pablo-walk.png"),
     loadImage("assets/images/uma-walk.png"),
-  ]).then(([p, u]) => { pabloImg = p; umaImg = u; });
+    loadImage("assets/images/girasolpixel.png"),
+  ]).then(([p, u, f]) => { pabloImg = p; umaImg = u; flowerImg = f; });
 
   async function generateWallpaper() {
     await imagesReady;
@@ -775,67 +777,66 @@
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, W, H);
 
-    const clearing = ctx.createRadialGradient(W / 2, H * 0.62, H * 0.1, W / 2, H * 0.62, H * 0.55);
+    const clearing = ctx.createRadialGradient(W / 2, H * 0.72, H * 0.08, W / 2, H * 0.72, H * 0.42);
     clearing.addColorStop(0, "#8fbf63");
     clearing.addColorStop(1, "rgba(143,191,99,0)");
     ctx.fillStyle = clearing;
     ctx.fillRect(0, 0, W, H);
 
-    // siluetas de arboles decorativos
+    // siluetas de arboles decorativos (banda inferior)
     ctx.fillStyle = "#2c4522";
-    for (let i = 0; i < 14; i++) {
-      const tx = (i / 13) * W + (i % 2 ? 40 : -40);
-      const th = 160 + (i % 3) * 60;
+    const treeCount = 9;
+    for (let i = 0; i < treeCount; i++) {
+      const tx = (i / (treeCount - 1)) * W + (i % 2 ? 30 : -30);
+      const th = 130 + (i % 3) * 50;
       ctx.beginPath();
-      ctx.moveTo(tx, H - 40);
-      ctx.lineTo(tx - th * 0.28, H - 40 - th);
-      ctx.lineTo(tx + th * 0.28, H - 40 - th);
+      ctx.moveTo(tx, H - 30);
+      ctx.lineTo(tx - th * 0.3, H - 30 - th);
+      ctx.lineTo(tx + th * 0.3, H - 30 - th);
       ctx.closePath();
       ctx.fill();
     }
 
-    // flores decorativas dispersas
+    // flores decorativas dispersas por buena parte del alto (para que un
+    // formato vertical tan largo no se sienta vacio arriba)
     const flowerColors = ["#e3a541", "#e07a9a", "#f5e9c8"];
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 90; i++) {
       const fx = Math.random() * W;
-      const fy = H * 0.68 + Math.random() * H * 0.28;
+      const fy = H * 0.32 + Math.random() * H * 0.62;
       ctx.fillStyle = flowerColors[i % flowerColors.length];
       ctx.beginPath();
-      ctx.arc(fx, fy, 4 + Math.random() * 4, 0, Math.PI * 2);
+      ctx.arc(fx, fy, 3 + Math.random() * 4, 0, Math.PI * 2);
       ctx.fill();
     }
 
     // personajes, de cuerpo entero, uno junto al otro con espacio para el ramo
-    const baseline = H * 0.88;
-    const scale = 3.3;
+    const baseline = H * 0.72;
+    const scale = 2.8;
     const drawChar = (img, native, cx) => {
       if (!img) return;
       const size = native * scale;
       ctx.drawImage(img, 1 * native, ROW.down * native, native, native, cx - size / 2, baseline - size, size, size);
     };
-    drawChar(pabloImg, NATIVE_FRAME.pablo, W * 0.33);
-    drawChar(umaImg, NATIVE_FRAME.uma, W * 0.67);
+    drawChar(pabloImg, NATIVE_FRAME.pablo, W * 0.27);
+    drawChar(umaImg, NATIVE_FRAME.uma, W * 0.73);
 
-    // ramo dibujado a mano (no depende de que el sistema tenga fuente emoji)
-    const bx = W * 0.5;
-    const by = baseline - NATIVE_FRAME.pablo * scale * 0.42;
-    const petals = [
-      { dx: -22, dy: -6, c: "#e3a541" }, { dx: 0, dy: -18, c: "#e07a9a" },
-      { dx: 22, dy: -6, c: "#e3a541" }, { dx: -12, dy: 12, c: "#f5e9c8" },
-      { dx: 12, dy: 12, c: "#e07a9a" }, { dx: 0, dy: -2, c: "#f5e9c8" },
-    ];
-    petals.forEach((p) => {
-      ctx.fillStyle = p.c;
-      ctx.beginPath();
-      ctx.arc(bx + p.dx, by + p.dy, 16, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.strokeStyle = "#4f7a3a";
-    ctx.lineWidth = 6;
-    ctx.beginPath();
-    ctx.moveTo(bx, by + 20);
-    ctx.lineTo(bx, by + 70);
-    ctx.stroke();
+    // el girasol pixel art provisto, como ramo entre los dos (uno grande al
+    // frente y dos mas chicos inclinados detras, para que se lea como ramo)
+    if (flowerImg) {
+      const bx = W * 0.5;
+      const by = baseline - NATIVE_FRAME.pablo * scale * 0.5;
+      const drawFlower = (w, dx, dy, rotDeg) => {
+        const h = w * (flowerImg.height / flowerImg.width);
+        ctx.save();
+        ctx.translate(bx + dx, by + dy);
+        ctx.rotate((rotDeg * Math.PI) / 180);
+        ctx.drawImage(flowerImg, -w / 2, -h * 0.28, w, h);
+        ctx.restore();
+      };
+      drawFlower(120, -46, 6, -18);
+      drawFlower(120, 46, 6, 18);
+      drawFlower(150, 0, -10, 0);
+    }
 
     // titulo pixel
     ctx.fillStyle = "#f5e9c8";
